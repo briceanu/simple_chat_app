@@ -1,4 +1,4 @@
-from fastapi import WebSocket,Query,Header
+from fastapi import WebSocket, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import jwt
@@ -8,11 +8,11 @@ from dotenv import load_dotenv
 import os
 from typing import Annotated
 
-app = FastAPI(title='Simple chat app')
+app = FastAPI(
+    title="Simple chat app",
+    summary="This is a simple real-time chat application built with FastAPI. It supports WebSocket connections, allowing multiple clients to send and receive messages in real time. Users are authenticated using JWT tokens, and messages are broadcasted to all connected clients. The app also includes CORS middleware to allow cross-origin requests and integrates user-related routes via a FastAPI router.",
+)
 app.include_router(user_router)
-
-
-
 
 
 app.add_middleware(
@@ -22,7 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
- 
 
 
 load_dotenv()
@@ -31,6 +30,7 @@ load_dotenv()
 REFRESH_SECRET = os.getenv("REFRESH_SECRET")
 SECRET = os.getenv("SECRET")
 ALGORITHM = os.getenv("ALGORITHM")
+
 
 class ConnectionManager:
     def __init__(self):
@@ -54,16 +54,15 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-
 @app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, token: Annotated[str,Query()]):
+async def websocket_endpoint(websocket: WebSocket, token: Annotated[str, Query()]):
     try:
         payload = jwt.decode(token, SECRET, algorithms=ALGORITHM)
         username: str = payload.get("sub")
     except InvalidTokenError:
         await websocket.close()
         return
-    
+
     await manager.connect(websocket)
     try:
         while True:

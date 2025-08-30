@@ -5,8 +5,6 @@ from app.schemas import user_schema
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.db_connection import get_async_db
 from fastapi.security import OAuth2PasswordRequestForm
-from app.utils.user_logic import get_current_active_user
-from app.models.user_model import User
 
 
 from typing import Annotated
@@ -158,6 +156,3 @@ async def get_new_access_token_from_refresh_token(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"{str(e)}"
         )
-
-
- 
