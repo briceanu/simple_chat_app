@@ -118,15 +118,15 @@ def create_refresh_token(data: dict, expires_delta: timedelta | None = None) -> 
     return refresh_token
 
 
-async def sign_up_user(user_data: user_schema.UserSchemaIn, async_sesion: AsyncSession):
+async def sign_up_user(user_data: user_schema.UserSchemaIn, async_session: AsyncSession):
     stmt = insert(User).values(
         username=user_data.username,
         password=pwd_context.hash(user_data.password),
         is_active=True,
         scopes=user_data.scopes.value,
     )
-    await async_sesion.execute(stmt)
-    await async_sesion.commit()
+    await async_session.execute(stmt)
+    await async_session.commit()
     return user_schema.UserSchemaOut(success="your account has been created.")
 
 
